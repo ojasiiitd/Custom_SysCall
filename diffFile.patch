@@ -1,0 +1,1800 @@
+diff -urN linux-3.16-UPDATED/arch/x86/syscalls/syscall_64.tbl linux-3.16-ORG/arch/x86/syscalls/syscall_64.tbl
+--- linux-3.16-UPDATED/arch/x86/syscalls/syscall_64.tbl	2019-09-27 12:34:04.107757560 +0530
++++ linux-3.16-ORG/arch/x86/syscalls/syscall_64.tbl	2014-08-04 03:55:02.000000000 +0530
+@@ -323,8 +323,6 @@
+ 314	common	sched_setattr		sys_sched_setattr
+ 315	common	sched_getattr		sys_sched_getattr
+ 316	common	renameat2		sys_renameat2
+-317	64	hello			sys_hello
+-318	64	sh_task_info		sys_sh_task_info
+ 
+ #
+ # x32-specific system call numbers start at 512 to avoid cache impact
+diff -urN linux-3.16-UPDATED/hello/.built-in.o.cmd linux-3.16-ORG/hello/.built-in.o.cmd
+--- linux-3.16-UPDATED/hello/.built-in.o.cmd	2019-09-27 12:30:27.467757560 +0530
++++ linux-3.16-ORG/hello/.built-in.o.cmd	1970-01-01 05:30:00.000000000 +0530
+@@ -1 +0,0 @@
+-cmd_hello/built-in.o :=  ld -m elf_x86_64   -r -o hello/built-in.o hello/hello.o 
+diff -urN linux-3.16-UPDATED/hello/hello.c linux-3.16-ORG/hello/hello.c
+--- linux-3.16-UPDATED/hello/hello.c	2019-09-27 12:30:27.459757560 +0530
++++ linux-3.16-ORG/hello/hello.c	1970-01-01 05:30:00.000000000 +0530
+@@ -1,8 +0,0 @@
+-#include <linux/kernel.h>
+-
+-asmlinkage long sys_hello(void)
+-{
+-	printk("Hello World!\n");
+-
+-	return 0;
+-}
+diff -urN linux-3.16-UPDATED/hello/.hello.o.cmd linux-3.16-ORG/hello/.hello.o.cmd
+--- linux-3.16-UPDATED/hello/.hello.o.cmd	2019-09-27 12:30:27.463757560 +0530
++++ linux-3.16-ORG/hello/.hello.o.cmd	1970-01-01 05:30:00.000000000 +0530
+@@ -1,158 +0,0 @@
+-cmd_hello/hello.o := gcc -Wp,-MD,hello/.hello.o.d  -nostdinc -isystem /usr/lib/gcc/x86_64-linux-gnu/4.9/include -I./arch/x86/include -Iarch/x86/include/generated  -Iinclude -I./arch/x86/include/uapi -Iarch/x86/include/generated/uapi -I./include/uapi -Iinclude/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -m64 -mno-mmx -mno-sse -mno-80387 -mno-fp-ret-in-387 -mpreferred-stack-boundary=3 -mtune=generic -mno-red-zone -mcmodel=kernel -funit-at-a-time -maccumulate-outgoing-args -DCONFIG_X86_X32_ABI -DCONFIG_AS_CFI=1 -DCONFIG_AS_CFI_SIGNAL_FRAME=1 -DCONFIG_AS_CFI_SECTIONS=1 -DCONFIG_AS_FXSAVEQ=1 -DCONFIG_AS_CRC32=1 -DCONFIG_AS_AVX=1 -DCONFIG_AS_AVX2=1 -pipe -Wno-sign-compare -fno-asynchronous-unwind-tables -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fno-delete-null-pointer-checks -O2 -Wframe-larger-than=1024 -fstack-protector -Wno-unused-but-set-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -g -pg -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -DCC_HAVE_ASM_GOTO    -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(hello)"  -D"KBUILD_MODNAME=KBUILD_STR(hello)" -c -o hello/.tmp_hello.o hello/hello.c
+-
+-source_hello/hello.o := hello/hello.c
+-
+-deps_hello/hello.o := \
+-  include/linux/kernel.h \
+-    $(wildcard include/config/lbdaf.h) \
+-    $(wildcard include/config/preempt/voluntary.h) \
+-    $(wildcard include/config/debug/atomic/sleep.h) \
+-    $(wildcard include/config/mmu.h) \
+-    $(wildcard include/config/prove/locking.h) \
+-    $(wildcard include/config/panic/timeout.h) \
+-    $(wildcard include/config/ring/buffer.h) \
+-    $(wildcard include/config/tracing.h) \
+-    $(wildcard include/config/ftrace/mcount/record.h) \
+-  /usr/lib/gcc/x86_64-linux-gnu/4.9/include/stdarg.h \
+-  include/linux/linkage.h \
+-  include/linux/compiler.h \
+-    $(wildcard include/config/sparse/rcu/pointer.h) \
+-    $(wildcard include/config/trace/branch/profiling.h) \
+-    $(wildcard include/config/profile/all/branches.h) \
+-    $(wildcard include/config/enable/must/check.h) \
+-    $(wildcard include/config/enable/warn/deprecated.h) \
+-    $(wildcard include/config/kprobes.h) \
+-  include/linux/compiler-gcc.h \
+-    $(wildcard include/config/arch/supports/optimized/inlining.h) \
+-    $(wildcard include/config/optimize/inlining.h) \
+-  include/linux/compiler-gcc4.h \
+-    $(wildcard include/config/arch/use/builtin/bswap.h) \
+-  include/linux/stringify.h \
+-  include/linux/export.h \
+-    $(wildcard include/config/have/underscore/symbol/prefix.h) \
+-    $(wildcard include/config/modules.h) \
+-    $(wildcard include/config/modversions.h) \
+-    $(wildcard include/config/unused/symbols.h) \
+-  arch/x86/include/asm/linkage.h \
+-    $(wildcard include/config/x86/32.h) \
+-    $(wildcard include/config/x86/64.h) \
+-    $(wildcard include/config/x86/alignment/16.h) \
+-  include/linux/stddef.h \
+-  include/uapi/linux/stddef.h \
+-  include/linux/types.h \
+-    $(wildcard include/config/uid16.h) \
+-    $(wildcard include/config/arch/dma/addr/t/64bit.h) \
+-    $(wildcard include/config/phys/addr/t/64bit.h) \
+-    $(wildcard include/config/64bit.h) \
+-  include/uapi/linux/types.h \
+-  arch/x86/include/uapi/asm/types.h \
+-  include/uapi/asm-generic/types.h \
+-  include/asm-generic/int-ll64.h \
+-  include/uapi/asm-generic/int-ll64.h \
+-  arch/x86/include/uapi/asm/bitsperlong.h \
+-  include/asm-generic/bitsperlong.h \
+-  include/uapi/asm-generic/bitsperlong.h \
+-  include/uapi/linux/posix_types.h \
+-  arch/x86/include/asm/posix_types.h \
+-  arch/x86/include/uapi/asm/posix_types_64.h \
+-  include/uapi/asm-generic/posix_types.h \
+-  include/linux/bitops.h \
+-  arch/x86/include/asm/bitops.h \
+-    $(wildcard include/config/x86/cmov.h) \
+-  arch/x86/include/asm/alternative.h \
+-    $(wildcard include/config/smp.h) \
+-    $(wildcard include/config/paravirt.h) \
+-  arch/x86/include/asm/asm.h \
+-  arch/x86/include/asm/ptrace.h \
+-    $(wildcard include/config/x86/debugctlmsr.h) \
+-  arch/x86/include/asm/segment.h \
+-    $(wildcard include/config/cc/stackprotector.h) \
+-    $(wildcard include/config/x86/32/lazy/gs.h) \
+-  include/uapi/linux/const.h \
+-  arch/x86/include/asm/cache.h \
+-    $(wildcard include/config/x86/l1/cache/shift.h) \
+-    $(wildcard include/config/x86/internode/cache/shift.h) \
+-    $(wildcard include/config/x86/vsmp.h) \
+-  arch/x86/include/asm/page_types.h \
+-    $(wildcard include/config/physical/start.h) \
+-    $(wildcard include/config/physical/align.h) \
+-  arch/x86/include/asm/page_64_types.h \
+-    $(wildcard include/config/randomize/base.h) \
+-    $(wildcard include/config/randomize/base/max/offset.h) \
+-  arch/x86/include/uapi/asm/ptrace.h \
+-  arch/x86/include/uapi/asm/ptrace-abi.h \
+-  arch/x86/include/asm/processor-flags.h \
+-    $(wildcard include/config/vm86.h) \
+-  arch/x86/include/uapi/asm/processor-flags.h \
+-  arch/x86/include/asm/paravirt_types.h \
+-    $(wildcard include/config/x86/local/apic.h) \
+-    $(wildcard include/config/x86/pae.h) \
+-    $(wildcard include/config/paravirt/debug.h) \
+-  arch/x86/include/asm/desc_defs.h \
+-  arch/x86/include/asm/kmap_types.h \
+-    $(wildcard include/config/debug/highmem.h) \
+-  include/asm-generic/kmap_types.h \
+-  arch/x86/include/asm/pgtable_types.h \
+-    $(wildcard include/config/kmemcheck.h) \
+-    $(wildcard include/config/mem/soft/dirty.h) \
+-    $(wildcard include/config/numa/balancing.h) \
+-    $(wildcard include/config/proc/fs.h) \
+-  arch/x86/include/asm/pgtable_64_types.h \
+-  arch/x86/include/asm/sparsemem.h \
+-    $(wildcard include/config/sparsemem.h) \
+-  arch/x86/include/asm/spinlock_types.h \
+-    $(wildcard include/config/paravirt/spinlocks.h) \
+-    $(wildcard include/config/nr/cpus.h) \
+-    $(wildcard include/config/queue/rwlock.h) \
+-  include/asm-generic/qrwlock_types.h \
+-  include/asm-generic/ptrace.h \
+-  arch/x86/include/asm/cpufeature.h \
+-    $(wildcard include/config/x86/debug/static/cpu/has.h) \
+-  arch/x86/include/asm/required-features.h \
+-    $(wildcard include/config/x86/minimum/cpu/family.h) \
+-    $(wildcard include/config/math/emulation.h) \
+-    $(wildcard include/config/x86/cmpxchg64.h) \
+-    $(wildcard include/config/x86/use/3dnow.h) \
+-    $(wildcard include/config/x86/p6/nop.h) \
+-    $(wildcard include/config/matom.h) \
+-  arch/x86/include/asm/rmwcc.h \
+-  arch/x86/include/asm/barrier.h \
+-    $(wildcard include/config/x86/ppro/fence.h) \
+-  arch/x86/include/asm/nops.h \
+-    $(wildcard include/config/mk7.h) \
+-  include/asm-generic/bitops/find.h \
+-    $(wildcard include/config/generic/find/first/bit.h) \
+-  include/asm-generic/bitops/sched.h \
+-  arch/x86/include/asm/arch_hweight.h \
+-  include/asm-generic/bitops/const_hweight.h \
+-  include/asm-generic/bitops/le.h \
+-  arch/x86/include/uapi/asm/byteorder.h \
+-  include/linux/byteorder/little_endian.h \
+-  include/uapi/linux/byteorder/little_endian.h \
+-  include/linux/swab.h \
+-  include/uapi/linux/swab.h \
+-  arch/x86/include/uapi/asm/swab.h \
+-  include/linux/byteorder/generic.h \
+-  include/asm-generic/bitops/ext2-atomic-setbit.h \
+-  include/linux/log2.h \
+-    $(wildcard include/config/arch/has/ilog2/u32.h) \
+-    $(wildcard include/config/arch/has/ilog2/u64.h) \
+-  include/linux/typecheck.h \
+-  include/linux/printk.h \
+-    $(wildcard include/config/default/message/loglevel.h) \
+-    $(wildcard include/config/early/printk.h) \
+-    $(wildcard include/config/printk.h) \
+-    $(wildcard include/config/dynamic/debug.h) \
+-  include/linux/init.h \
+-    $(wildcard include/config/broken/rodata.h) \
+-    $(wildcard include/config/lto.h) \
+-  include/linux/kern_levels.h \
+-  include/linux/cache.h \
+-    $(wildcard include/config/arch/has/cache/line/size.h) \
+-  include/uapi/linux/kernel.h \
+-  include/uapi/linux/sysinfo.h \
+-  include/linux/dynamic_debug.h \
+-
+-hello/hello.o: $(deps_hello/hello.o)
+-
+-$(deps_hello/hello.o):
+diff -urN linux-3.16-UPDATED/hello/Makefile linux-3.16-ORG/hello/Makefile
+--- linux-3.16-UPDATED/hello/Makefile	2019-09-27 12:30:27.459757560 +0530
++++ linux-3.16-ORG/hello/Makefile	1970-01-01 05:30:00.000000000 +0530
+@@ -1 +0,0 @@
+-obj-y:=hello.o
+diff -urN linux-3.16-UPDATED/include/linux/syscalls.h linux-3.16-ORG/include/linux/syscalls.h
+--- linux-3.16-UPDATED/include/linux/syscalls.h	2019-09-27 12:35:39.775757560 +0530
++++ linux-3.16-ORG/include/linux/syscalls.h	2014-08-04 03:55:02.000000000 +0530
+@@ -866,8 +866,4 @@
+ asmlinkage long sys_kcmp(pid_t pid1, pid_t pid2, int type,
+ 			 unsigned long idx1, unsigned long idx2);
+ asmlinkage long sys_finit_module(int fd, const char __user *uargs, int flags);
+-
+-asmlinkage long sys_hello(void);
+-
+-asmlinkage long sys_sh_task_info(int pid , char* filename);
+ #endif
+diff -urN linux-3.16-UPDATED/Makefile linux-3.16-ORG/Makefile
+--- linux-3.16-UPDATED/Makefile	2019-09-27 12:29:47.031757560 +0530
++++ linux-3.16-ORG/Makefile	2014-08-04 03:55:02.000000000 +0530
+@@ -839,7 +839,7 @@
+ 
+ 
+ ifeq ($(KBUILD_EXTMOD),)
+-core-y		+= kernel/ mm/ fs/ ipc/ security/ crypto/ block/ hello/ taskinfo/
++core-y		+= kernel/ mm/ fs/ ipc/ security/ crypto/ block/
+ 
+ vmlinux-dirs	:= $(patsubst %/,%,$(filter %/, $(init-y) $(init-m) \
+ 		     $(core-y) $(core-m) $(drivers-y) $(drivers-m) \
+diff -urN linux-3.16-UPDATED/taskinfo/.built-in.o.cmd linux-3.16-ORG/taskinfo/.built-in.o.cmd
+--- linux-3.16-UPDATED/taskinfo/.built-in.o.cmd	2019-09-27 12:27:17.867757560 +0530
++++ linux-3.16-ORG/taskinfo/.built-in.o.cmd	1970-01-01 05:30:00.000000000 +0530
+@@ -1 +0,0 @@
+-cmd_taskinfo/built-in.o :=  ld -m elf_x86_64   -r -o taskinfo/built-in.o taskinfo/sh_task_info.o 
+diff -urN linux-3.16-UPDATED/taskinfo/.git/COMMIT_EDITMSG linux-3.16-ORG/taskinfo/.git/COMMIT_EDITMSG
+--- linux-3.16-UPDATED/taskinfo/.git/COMMIT_EDITMSG	2019-09-27 12:27:17.923757560 +0530
++++ linux-3.16-ORG/taskinfo/.git/COMMIT_EDITMSG	1970-01-01 05:30:00.000000000 +0530
+@@ -1 +0,0 @@
+-Update
+diff -urN linux-3.16-UPDATED/taskinfo/.git/config linux-3.16-ORG/taskinfo/.git/config
+--- linux-3.16-UPDATED/taskinfo/.git/config	2019-09-27 12:27:17.923757560 +0530
++++ linux-3.16-ORG/taskinfo/.git/config	1970-01-01 05:30:00.000000000 +0530
+@@ -1,8 +0,0 @@
+-[core]
+-	repositoryformatversion = 0
+-	filemode = true
+-	bare = false
+-	logallrefupdates = true
+-[remote "origin"]
+-	url = https://github.com/ojasiiitd/Custom_System_Call.git
+-	fetch = +refs/heads/*:refs/remotes/origin/*
+diff -urN linux-3.16-UPDATED/taskinfo/.git/description linux-3.16-ORG/taskinfo/.git/description
+--- linux-3.16-UPDATED/taskinfo/.git/description	2019-09-27 12:27:17.883757560 +0530
++++ linux-3.16-ORG/taskinfo/.git/description	1970-01-01 05:30:00.000000000 +0530
+@@ -1 +0,0 @@
+-Unnamed repository; edit this file 'description' to name the repository.
+diff -urN linux-3.16-UPDATED/taskinfo/.git/FETCH_HEAD linux-3.16-ORG/taskinfo/.git/FETCH_HEAD
+--- linux-3.16-UPDATED/taskinfo/.git/FETCH_HEAD	2019-09-27 12:27:17.927757560 +0530
++++ linux-3.16-ORG/taskinfo/.git/FETCH_HEAD	1970-01-01 05:30:00.000000000 +0530
+@@ -1 +0,0 @@
+-bf85143ce8708213eab24d53dae9169adef4e9a5		branch 'master' of https://github.com/ojasiiitd/Custom_System_Call
+diff -urN linux-3.16-UPDATED/taskinfo/.git/HEAD linux-3.16-ORG/taskinfo/.git/HEAD
+--- linux-3.16-UPDATED/taskinfo/.git/HEAD	2019-09-27 12:27:17.895757560 +0530
++++ linux-3.16-ORG/taskinfo/.git/HEAD	1970-01-01 05:30:00.000000000 +0530
+@@ -1 +0,0 @@
+-ref: refs/heads/master
+diff -urN linux-3.16-UPDATED/taskinfo/.git/hooks/applypatch-msg.sample linux-3.16-ORG/taskinfo/.git/hooks/applypatch-msg.sample
+--- linux-3.16-UPDATED/taskinfo/.git/hooks/applypatch-msg.sample	2019-09-27 12:27:17.895757560 +0530
++++ linux-3.16-ORG/taskinfo/.git/hooks/applypatch-msg.sample	1970-01-01 05:30:00.000000000 +0530
+@@ -1,15 +0,0 @@
+-#!/bin/sh
+-#
+-# An example hook script to check the commit log message taken by
+-# applypatch from an e-mail message.
+-#
+-# The hook should exit with non-zero status after issuing an
+-# appropriate message if it wants to stop the commit.  The hook is
+-# allowed to edit the commit message file.
+-#
+-# To enable this hook, rename this file to "applypatch-msg".
+-
+-. git-sh-setup
+-test -x "$GIT_DIR/hooks/commit-msg" &&
+-	exec "$GIT_DIR/hooks/commit-msg" ${1+"$@"}
+-:
+diff -urN linux-3.16-UPDATED/taskinfo/.git/hooks/commit-msg.sample linux-3.16-ORG/taskinfo/.git/hooks/commit-msg.sample
+--- linux-3.16-UPDATED/taskinfo/.git/hooks/commit-msg.sample	2019-09-27 12:27:17.887757560 +0530
++++ linux-3.16-ORG/taskinfo/.git/hooks/commit-msg.sample	1970-01-01 05:30:00.000000000 +0530
+@@ -1,24 +0,0 @@
+-#!/bin/sh
+-#
+-# An example hook script to check the commit log message.
+-# Called by "git commit" with one argument, the name of the file
+-# that has the commit message.  The hook should exit with non-zero
+-# status after issuing an appropriate message if it wants to stop the
+-# commit.  The hook is allowed to edit the commit message file.
+-#
+-# To enable this hook, rename this file to "commit-msg".
+-
+-# Uncomment the below to add a Signed-off-by line to the message.
+-# Doing this in a hook is a bad idea in general, but the prepare-commit-msg
+-# hook is more suited to it.
+-#
+-# SOB=$(git var GIT_AUTHOR_IDENT | sed -n 's/^\(.*>\).*$/Signed-off-by: \1/p')
+-# grep -qs "^$SOB" "$1" || echo "$SOB" >> "$1"
+-
+-# This example catches duplicate Signed-off-by lines.
+-
+-test "" = "$(grep '^Signed-off-by: ' "$1" |
+-	 sort | uniq -c | sed -e '/^[ 	]*1[ 	]/d')" || {
+-	echo >&2 Duplicate Signed-off-by lines.
+-	exit 1
+-}
+diff -urN linux-3.16-UPDATED/taskinfo/.git/hooks/post-update.sample linux-3.16-ORG/taskinfo/.git/hooks/post-update.sample
+--- linux-3.16-UPDATED/taskinfo/.git/hooks/post-update.sample	2019-09-27 12:27:17.895757560 +0530
++++ linux-3.16-ORG/taskinfo/.git/hooks/post-update.sample	1970-01-01 05:30:00.000000000 +0530
+@@ -1,8 +0,0 @@
+-#!/bin/sh
+-#
+-# An example hook script to prepare a packed repository for use over
+-# dumb transports.
+-#
+-# To enable this hook, rename this file to "post-update".
+-
+-exec git update-server-info
+diff -urN linux-3.16-UPDATED/taskinfo/.git/hooks/pre-applypatch.sample linux-3.16-ORG/taskinfo/.git/hooks/pre-applypatch.sample
+--- linux-3.16-UPDATED/taskinfo/.git/hooks/pre-applypatch.sample	2019-09-27 12:27:17.891757560 +0530
++++ linux-3.16-ORG/taskinfo/.git/hooks/pre-applypatch.sample	1970-01-01 05:30:00.000000000 +0530
+@@ -1,14 +0,0 @@
+-#!/bin/sh
+-#
+-# An example hook script to verify what is about to be committed
+-# by applypatch from an e-mail message.
+-#
+-# The hook should exit with non-zero status after issuing an
+-# appropriate message if it wants to stop the commit.
+-#
+-# To enable this hook, rename this file to "pre-applypatch".
+-
+-. git-sh-setup
+-test -x "$GIT_DIR/hooks/pre-commit" &&
+-	exec "$GIT_DIR/hooks/pre-commit" ${1+"$@"}
+-:
+diff -urN linux-3.16-UPDATED/taskinfo/.git/hooks/pre-commit.sample linux-3.16-ORG/taskinfo/.git/hooks/pre-commit.sample
+--- linux-3.16-UPDATED/taskinfo/.git/hooks/pre-commit.sample	2019-09-27 12:27:17.891757560 +0530
++++ linux-3.16-ORG/taskinfo/.git/hooks/pre-commit.sample	1970-01-01 05:30:00.000000000 +0530
+@@ -1,49 +0,0 @@
+-#!/bin/sh
+-#
+-# An example hook script to verify what is about to be committed.
+-# Called by "git commit" with no arguments.  The hook should
+-# exit with non-zero status after issuing an appropriate message if
+-# it wants to stop the commit.
+-#
+-# To enable this hook, rename this file to "pre-commit".
+-
+-if git rev-parse --verify HEAD >/dev/null 2>&1
+-then
+-	against=HEAD
+-else
+-	# Initial commit: diff against an empty tree object
+-	against=4b825dc642cb6eb9a060e54bf8d69288fbee4904
+-fi
+-
+-# If you want to allow non-ASCII filenames set this variable to true.
+-allownonascii=$(git config --bool hooks.allownonascii)
+-
+-# Redirect output to stderr.
+-exec 1>&2
+-
+-# Cross platform projects tend to avoid non-ASCII filenames; prevent
+-# them from being added to the repository. We exploit the fact that the
+-# printable range starts at the space character and ends with tilde.
+-if [ "$allownonascii" != "true" ] &&
+-	# Note that the use of brackets around a tr range is ok here, (it's
+-	# even required, for portability to Solaris 10's /usr/bin/tr), since
+-	# the square bracket bytes happen to fall in the designated range.
+-	test $(git diff --cached --name-only --diff-filter=A -z $against |
+-	  LC_ALL=C tr -d '[ -~]\0' | wc -c) != 0
+-then
+-	cat <<\EOF
+-Error: Attempt to add a non-ASCII file name.
+-
+-This can cause problems if you want to work with people on other platforms.
+-
+-To be portable it is advisable to rename the file.
+-
+-If you know what you are doing you can disable this check using:
+-
+-  git config hooks.allownonascii true
+-EOF
+-	exit 1
+-fi
+-
+-# If there are whitespace errors, print the offending file names and fail.
+-exec git diff-index --check --cached $against --
+diff -urN linux-3.16-UPDATED/taskinfo/.git/hooks/prepare-commit-msg.sample linux-3.16-ORG/taskinfo/.git/hooks/prepare-commit-msg.sample
+--- linux-3.16-UPDATED/taskinfo/.git/hooks/prepare-commit-msg.sample	2019-09-27 12:27:17.891757560 +0530
++++ linux-3.16-ORG/taskinfo/.git/hooks/prepare-commit-msg.sample	1970-01-01 05:30:00.000000000 +0530
+@@ -1,36 +0,0 @@
+-#!/bin/sh
+-#
+-# An example hook script to prepare the commit log message.
+-# Called by "git commit" with the name of the file that has the
+-# commit message, followed by the description of the commit
+-# message's source.  The hook's purpose is to edit the commit
+-# message file.  If the hook fails with a non-zero status,
+-# the commit is aborted.
+-#
+-# To enable this hook, rename this file to "prepare-commit-msg".
+-
+-# This hook includes three examples.  The first comments out the
+-# "Conflicts:" part of a merge commit.
+-#
+-# The second includes the output of "git diff --name-status -r"
+-# into the message, just before the "git status" output.  It is
+-# commented because it doesn't cope with --amend or with squashed
+-# commits.
+-#
+-# The third example adds a Signed-off-by line to the message, that can
+-# still be edited.  This is rarely a good idea.
+-
+-case "$2,$3" in
+-  merge,)
+-    /usr/bin/perl -i.bak -ne 's/^/# /, s/^# #/#/ if /^Conflicts/ .. /#/; print' "$1" ;;
+-
+-# ,|template,)
+-#   /usr/bin/perl -i.bak -pe '
+-#      print "\n" . `git diff --cached --name-status -r`
+-#	 if /^#/ && $first++ == 0' "$1" ;;
+-
+-  *) ;;
+-esac
+-
+-# SOB=$(git var GIT_AUTHOR_IDENT | sed -n 's/^\(.*>\).*$/Signed-off-by: \1/p')
+-# grep -qs "^$SOB" "$1" || echo "$SOB" >> "$1"
+diff -urN linux-3.16-UPDATED/taskinfo/.git/hooks/pre-push.sample linux-3.16-ORG/taskinfo/.git/hooks/pre-push.sample
+--- linux-3.16-UPDATED/taskinfo/.git/hooks/pre-push.sample	2019-09-27 12:27:17.887757560 +0530
++++ linux-3.16-ORG/taskinfo/.git/hooks/pre-push.sample	1970-01-01 05:30:00.000000000 +0530
+@@ -1,54 +0,0 @@
+-#!/bin/sh
+-
+-# An example hook script to verify what is about to be pushed.  Called by "git
+-# push" after it has checked the remote status, but before anything has been
+-# pushed.  If this script exits with a non-zero status nothing will be pushed.
+-#
+-# This hook is called with the following parameters:
+-#
+-# $1 -- Name of the remote to which the push is being done
+-# $2 -- URL to which the push is being done
+-#
+-# If pushing without using a named remote those arguments will be equal.
+-#
+-# Information about the commits which are being pushed is supplied as lines to
+-# the standard input in the form:
+-#
+-#   <local ref> <local sha1> <remote ref> <remote sha1>
+-#
+-# This sample shows how to prevent push of commits where the log message starts
+-# with "WIP" (work in progress).
+-
+-remote="$1"
+-url="$2"
+-
+-z40=0000000000000000000000000000000000000000
+-
+-IFS=' '
+-while read local_ref local_sha remote_ref remote_sha
+-do
+-	if [ "$local_sha" = $z40 ]
+-	then
+-		# Handle delete
+-		:
+-	else
+-		if [ "$remote_sha" = $z40 ]
+-		then
+-			# New branch, examine all commits
+-			range="$local_sha"
+-		else
+-			# Update to existing branch, examine new commits
+-			range="$remote_sha..$local_sha"
+-		fi
+-
+-		# Check for WIP commit
+-		commit=`git rev-list -n 1 --grep '^WIP' "$range"`
+-		if [ -n "$commit" ]
+-		then
+-			echo "Found WIP commit in $local_ref, not pushing"
+-			exit 1
+-		fi
+-	fi
+-done
+-
+-exit 0
+diff -urN linux-3.16-UPDATED/taskinfo/.git/hooks/pre-rebase.sample linux-3.16-ORG/taskinfo/.git/hooks/pre-rebase.sample
+--- linux-3.16-UPDATED/taskinfo/.git/hooks/pre-rebase.sample	2019-09-27 12:27:17.887757560 +0530
++++ linux-3.16-ORG/taskinfo/.git/hooks/pre-rebase.sample	1970-01-01 05:30:00.000000000 +0530
+@@ -1,169 +0,0 @@
+-#!/bin/sh
+-#
+-# Copyright (c) 2006, 2008 Junio C Hamano
+-#
+-# The "pre-rebase" hook is run just before "git rebase" starts doing
+-# its job, and can prevent the command from running by exiting with
+-# non-zero status.
+-#
+-# The hook is called with the following parameters:
+-#
+-# $1 -- the upstream the series was forked from.
+-# $2 -- the branch being rebased (or empty when rebasing the current branch).
+-#
+-# This sample shows how to prevent topic branches that are already
+-# merged to 'next' branch from getting rebased, because allowing it
+-# would result in rebasing already published history.
+-
+-publish=next
+-basebranch="$1"
+-if test "$#" = 2
+-then
+-	topic="refs/heads/$2"
+-else
+-	topic=`git symbolic-ref HEAD` ||
+-	exit 0 ;# we do not interrupt rebasing detached HEAD
+-fi
+-
+-case "$topic" in
+-refs/heads/??/*)
+-	;;
+-*)
+-	exit 0 ;# we do not interrupt others.
+-	;;
+-esac
+-
+-# Now we are dealing with a topic branch being rebased
+-# on top of master.  Is it OK to rebase it?
+-
+-# Does the topic really exist?
+-git show-ref -q "$topic" || {
+-	echo >&2 "No such branch $topic"
+-	exit 1
+-}
+-
+-# Is topic fully merged to master?
+-not_in_master=`git rev-list --pretty=oneline ^master "$topic"`
+-if test -z "$not_in_master"
+-then
+-	echo >&2 "$topic is fully merged to master; better remove it."
+-	exit 1 ;# we could allow it, but there is no point.
+-fi
+-
+-# Is topic ever merged to next?  If so you should not be rebasing it.
+-only_next_1=`git rev-list ^master "^$topic" ${publish} | sort`
+-only_next_2=`git rev-list ^master           ${publish} | sort`
+-if test "$only_next_1" = "$only_next_2"
+-then
+-	not_in_topic=`git rev-list "^$topic" master`
+-	if test -z "$not_in_topic"
+-	then
+-		echo >&2 "$topic is already up-to-date with master"
+-		exit 1 ;# we could allow it, but there is no point.
+-	else
+-		exit 0
+-	fi
+-else
+-	not_in_next=`git rev-list --pretty=oneline ^${publish} "$topic"`
+-	/usr/bin/perl -e '
+-		my $topic = $ARGV[0];
+-		my $msg = "* $topic has commits already merged to public branch:\n";
+-		my (%not_in_next) = map {
+-			/^([0-9a-f]+) /;
+-			($1 => 1);
+-		} split(/\n/, $ARGV[1]);
+-		for my $elem (map {
+-				/^([0-9a-f]+) (.*)$/;
+-				[$1 => $2];
+-			} split(/\n/, $ARGV[2])) {
+-			if (!exists $not_in_next{$elem->[0]}) {
+-				if ($msg) {
+-					print STDERR $msg;
+-					undef $msg;
+-				}
+-				print STDERR " $elem->[1]\n";
+-			}
+-		}
+-	' "$topic" "$not_in_next" "$not_in_master"
+-	exit 1
+-fi
+-
+-<<\DOC_END
+-
+-This sample hook safeguards topic branches that have been
+-published from being rewound.
+-
+-The workflow assumed here is:
+-
+- * Once a topic branch forks from "master", "master" is never
+-   merged into it again (either directly or indirectly).
+-
+- * Once a topic branch is fully cooked and merged into "master",
+-   it is deleted.  If you need to build on top of it to correct
+-   earlier mistakes, a new topic branch is created by forking at
+-   the tip of the "master".  This is not strictly necessary, but
+-   it makes it easier to keep your history simple.
+-
+- * Whenever you need to test or publish your changes to topic
+-   branches, merge them into "next" branch.
+-
+-The script, being an example, hardcodes the publish branch name
+-to be "next", but it is trivial to make it configurable via
+-$GIT_DIR/config mechanism.
+-
+-With this workflow, you would want to know:
+-
+-(1) ... if a topic branch has ever been merged to "next".  Young
+-    topic branches can have stupid mistakes you would rather
+-    clean up before publishing, and things that have not been
+-    merged into other branches can be easily rebased without
+-    affecting other people.  But once it is published, you would
+-    not want to rewind it.
+-
+-(2) ... if a topic branch has been fully merged to "master".
+-    Then you can delete it.  More importantly, you should not
+-    build on top of it -- other people may already want to
+-    change things related to the topic as patches against your
+-    "master", so if you need further changes, it is better to
+-    fork the topic (perhaps with the same name) afresh from the
+-    tip of "master".
+-
+-Let's look at this example:
+-
+-		   o---o---o---o---o---o---o---o---o---o "next"
+-		  /       /           /           /
+-		 /   a---a---b A     /           /
+-		/   /               /           /
+-	       /   /   c---c---c---c B         /
+-	      /   /   /             \         /
+-	     /   /   /   b---b C     \       /
+-	    /   /   /   /             \     /
+-    ---o---o---o---o---o---o---o---o---o---o---o "master"
+-
+-
+-A, B and C are topic branches.
+-
+- * A has one fix since it was merged up to "next".
+-
+- * B has finished.  It has been fully merged up to "master" and "next",
+-   and is ready to be deleted.
+-
+- * C has not merged to "next" at all.
+-
+-We would want to allow C to be rebased, refuse A, and encourage
+-B to be deleted.
+-
+-To compute (1):
+-
+-	git rev-list ^master ^topic next
+-	git rev-list ^master        next
+-
+-	if these match, topic has not merged in next at all.
+-
+-To compute (2):
+-
+-	git rev-list master..topic
+-
+-	if this is empty, it is fully merged to "master".
+-
+-DOC_END
+diff -urN linux-3.16-UPDATED/taskinfo/.git/hooks/update.sample linux-3.16-ORG/taskinfo/.git/hooks/update.sample
+--- linux-3.16-UPDATED/taskinfo/.git/hooks/update.sample	2019-09-27 12:27:17.891757560 +0530
++++ linux-3.16-ORG/taskinfo/.git/hooks/update.sample	1970-01-01 05:30:00.000000000 +0530
+@@ -1,128 +0,0 @@
+-#!/bin/sh
+-#
+-# An example hook script to blocks unannotated tags from entering.
+-# Called by "git receive-pack" with arguments: refname sha1-old sha1-new
+-#
+-# To enable this hook, rename this file to "update".
+-#
+-# Config
+-# ------
+-# hooks.allowunannotated
+-#   This boolean sets whether unannotated tags will be allowed into the
+-#   repository.  By default they won't be.
+-# hooks.allowdeletetag
+-#   This boolean sets whether deleting tags will be allowed in the
+-#   repository.  By default they won't be.
+-# hooks.allowmodifytag
+-#   This boolean sets whether a tag may be modified after creation. By default
+-#   it won't be.
+-# hooks.allowdeletebranch
+-#   This boolean sets whether deleting branches will be allowed in the
+-#   repository.  By default they won't be.
+-# hooks.denycreatebranch
+-#   This boolean sets whether remotely creating branches will be denied
+-#   in the repository.  By default this is allowed.
+-#
+-
+-# --- Command line
+-refname="$1"
+-oldrev="$2"
+-newrev="$3"
+-
+-# --- Safety check
+-if [ -z "$GIT_DIR" ]; then
+-	echo "Don't run this script from the command line." >&2
+-	echo " (if you want, you could supply GIT_DIR then run" >&2
+-	echo "  $0 <ref> <oldrev> <newrev>)" >&2
+-	exit 1
+-fi
+-
+-if [ -z "$refname" -o -z "$oldrev" -o -z "$newrev" ]; then
+-	echo "usage: $0 <ref> <oldrev> <newrev>" >&2
+-	exit 1
+-fi
+-
+-# --- Config
+-allowunannotated=$(git config --bool hooks.allowunannotated)
+-allowdeletebranch=$(git config --bool hooks.allowdeletebranch)
+-denycreatebranch=$(git config --bool hooks.denycreatebranch)
+-allowdeletetag=$(git config --bool hooks.allowdeletetag)
+-allowmodifytag=$(git config --bool hooks.allowmodifytag)
+-
+-# check for no description
+-projectdesc=$(sed -e '1q' "$GIT_DIR/description")
+-case "$projectdesc" in
+-"Unnamed repository"* | "")
+-	echo "*** Project description file hasn't been set" >&2
+-	exit 1
+-	;;
+-esac
+-
+-# --- Check types
+-# if $newrev is 0000...0000, it's a commit to delete a ref.
+-zero="0000000000000000000000000000000000000000"
+-if [ "$newrev" = "$zero" ]; then
+-	newrev_type=delete
+-else
+-	newrev_type=$(git cat-file -t $newrev)
+-fi
+-
+-case "$refname","$newrev_type" in
+-	refs/tags/*,commit)
+-		# un-annotated tag
+-		short_refname=${refname##refs/tags/}
+-		if [ "$allowunannotated" != "true" ]; then
+-			echo "*** The un-annotated tag, $short_refname, is not allowed in this repository" >&2
+-			echo "*** Use 'git tag [ -a | -s ]' for tags you want to propagate." >&2
+-			exit 1
+-		fi
+-		;;
+-	refs/tags/*,delete)
+-		# delete tag
+-		if [ "$allowdeletetag" != "true" ]; then
+-			echo "*** Deleting a tag is not allowed in this repository" >&2
+-			exit 1
+-		fi
+-		;;
+-	refs/tags/*,tag)
+-		# annotated tag
+-		if [ "$allowmodifytag" != "true" ] && git rev-parse $refname > /dev/null 2>&1
+-		then
+-			echo "*** Tag '$refname' already exists." >&2
+-			echo "*** Modifying a tag is not allowed in this repository." >&2
+-			exit 1
+-		fi
+-		;;
+-	refs/heads/*,commit)
+-		# branch
+-		if [ "$oldrev" = "$zero" -a "$denycreatebranch" = "true" ]; then
+-			echo "*** Creating a branch is not allowed in this repository" >&2
+-			exit 1
+-		fi
+-		;;
+-	refs/heads/*,delete)
+-		# delete branch
+-		if [ "$allowdeletebranch" != "true" ]; then
+-			echo "*** Deleting a branch is not allowed in this repository" >&2
+-			exit 1
+-		fi
+-		;;
+-	refs/remotes/*,commit)
+-		# tracking branch
+-		;;
+-	refs/remotes/*,delete)
+-		# delete tracking branch
+-		if [ "$allowdeletebranch" != "true" ]; then
+-			echo "*** Deleting a tracking branch is not allowed in this repository" >&2
+-			exit 1
+-		fi
+-		;;
+-	*)
+-		# Anything else (is there anything else?)
+-		echo "*** Update hook: unknown type of update to ref $refname of type $newrev_type" >&2
+-		exit 1
+-		;;
+-esac
+-
+-# --- Finished
+-exit 0
+Binary files linux-3.16-UPDATED/taskinfo/.git/index and linux-3.16-ORG/taskinfo/.git/index differ
+diff -urN linux-3.16-UPDATED/taskinfo/.git/info/exclude linux-3.16-ORG/taskinfo/.git/info/exclude
+--- linux-3.16-UPDATED/taskinfo/.git/info/exclude	2019-09-27 12:27:17.883757560 +0530
++++ linux-3.16-ORG/taskinfo/.git/info/exclude	1970-01-01 05:30:00.000000000 +0530
+@@ -1,6 +0,0 @@
+-# git ls-files --others --exclude-from=.git/info/exclude
+-# Lines that start with '#' are comments.
+-# For a project mostly in C, the following would be a good set of
+-# exclude patterns (uncomment them if you want to use them):
+-# *.[oa]
+-# *~
+diff -urN linux-3.16-UPDATED/taskinfo/.git/logs/HEAD linux-3.16-ORG/taskinfo/.git/logs/HEAD
+--- linux-3.16-UPDATED/taskinfo/.git/logs/HEAD	2019-09-27 12:27:17.935757560 +0530
++++ linux-3.16-ORG/taskinfo/.git/logs/HEAD	1970-01-01 05:30:00.000000000 +0530
+@@ -1,2 +0,0 @@
+-0000000000000000000000000000000000000000 bf85143ce8708213eab24d53dae9169adef4e9a5 Ojas Saxena <ojassaxena03@gmail.com> 1569499653 +0530	commit (initial): First Commit
+-bf85143ce8708213eab24d53dae9169adef4e9a5 c279261bf6d7f17070da0678b95d29cb35c825b8 Ojas Saxena <ojassaxena03@gmail.com> 1569521229 +0530	commit: Update
+diff -urN linux-3.16-UPDATED/taskinfo/.git/logs/refs/heads/master linux-3.16-ORG/taskinfo/.git/logs/refs/heads/master
+--- linux-3.16-UPDATED/taskinfo/.git/logs/refs/heads/master	2019-09-27 12:27:17.931757560 +0530
++++ linux-3.16-ORG/taskinfo/.git/logs/refs/heads/master	1970-01-01 05:30:00.000000000 +0530
+@@ -1,2 +0,0 @@
+-0000000000000000000000000000000000000000 bf85143ce8708213eab24d53dae9169adef4e9a5 Ojas Saxena <ojassaxena03@gmail.com> 1569499653 +0530	commit (initial): First Commit
+-bf85143ce8708213eab24d53dae9169adef4e9a5 c279261bf6d7f17070da0678b95d29cb35c825b8 Ojas Saxena <ojassaxena03@gmail.com> 1569521229 +0530	commit: Update
+diff -urN linux-3.16-UPDATED/taskinfo/.git/logs/refs/remotes/origin/master linux-3.16-ORG/taskinfo/.git/logs/refs/remotes/origin/master
+--- linux-3.16-UPDATED/taskinfo/.git/logs/refs/remotes/origin/master	2019-09-27 12:27:17.935757560 +0530
++++ linux-3.16-ORG/taskinfo/.git/logs/refs/remotes/origin/master	1970-01-01 05:30:00.000000000 +0530
+@@ -1,2 +0,0 @@
+-0000000000000000000000000000000000000000 bf85143ce8708213eab24d53dae9169adef4e9a5 Ojas Saxena <ojassaxena03@gmail.com> 1569499678 +0530	update by push
+-bf85143ce8708213eab24d53dae9169adef4e9a5 c279261bf6d7f17070da0678b95d29cb35c825b8 Ojas Saxena <ojassaxena03@gmail.com> 1569521423 +0530	update by push
+Binary files linux-3.16-UPDATED/taskinfo/.git/objects/35/dea57b3b8b5dc17fe770145f6ad13a7841901c and linux-3.16-ORG/taskinfo/.git/objects/35/dea57b3b8b5dc17fe770145f6ad13a7841901c differ
+Binary files linux-3.16-UPDATED/taskinfo/.git/objects/67/5ecc42b935bdd0258b05c064001e00c096b764 and linux-3.16-ORG/taskinfo/.git/objects/67/5ecc42b935bdd0258b05c064001e00c096b764 differ
+Binary files linux-3.16-UPDATED/taskinfo/.git/objects/6b/238a04b272f0d6c21a487be25865bf0066207f and linux-3.16-ORG/taskinfo/.git/objects/6b/238a04b272f0d6c21a487be25865bf0066207f differ
+Binary files linux-3.16-UPDATED/taskinfo/.git/objects/ba/60f551b80cc09aa70373f98a0607b6f223d1b7 and linux-3.16-ORG/taskinfo/.git/objects/ba/60f551b80cc09aa70373f98a0607b6f223d1b7 differ
+diff -urN linux-3.16-UPDATED/taskinfo/.git/objects/bf/85143ce8708213eab24d53dae9169adef4e9a5 linux-3.16-ORG/taskinfo/.git/objects/bf/85143ce8708213eab24d53dae9169adef4e9a5
+--- linux-3.16-UPDATED/taskinfo/.git/objects/bf/85143ce8708213eab24d53dae9169adef4e9a5	2019-09-27 12:27:17.915757560 +0530
++++ linux-3.16-ORG/taskinfo/.git/objects/bf/85143ce8708213eab24d53dae9169adef4e9a5	1970-01-01 05:30:00.000000000 +0530
+@@ -1,2 +0,0 @@
+-xùçK
+-1D]ÁΩ$IO>"Ç‡÷Ö'h'ç3<æ√¡]’Éz5∂ZK›¶O" ôxL¡c"$±ÇC∂Ò¨GcŸs…€ò0)˛ÙGõ‡Ú‰Æ¸ï7√æ-e^≥∆„ΩryÌ∆V`úßÅ»;Ñ≠v®’Bó◊.ˇÓ’πLsá”™Q?U˝<)
+\ No newline at end of file
+Binary files linux-3.16-UPDATED/taskinfo/.git/objects/c2/79261bf6d7f17070da0678b95d29cb35c825b8 and linux-3.16-ORG/taskinfo/.git/objects/c2/79261bf6d7f17070da0678b95d29cb35c825b8 differ
+Binary files linux-3.16-UPDATED/taskinfo/.git/objects/d7/0b778ddb4d9e959731eaeb362cc18c6645b4e2 and linux-3.16-ORG/taskinfo/.git/objects/d7/0b778ddb4d9e959731eaeb362cc18c6645b4e2 differ
+Binary files linux-3.16-UPDATED/taskinfo/.git/objects/e6/9de29bb2d1d6434b8b29ae775ad8c2e48c5391 and linux-3.16-ORG/taskinfo/.git/objects/e6/9de29bb2d1d6434b8b29ae775ad8c2e48c5391 differ
+Binary files linux-3.16-UPDATED/taskinfo/.git/objects/ef/9acd763d939e2e34f28b726312a6af7d628d3d and linux-3.16-ORG/taskinfo/.git/objects/ef/9acd763d939e2e34f28b726312a6af7d628d3d differ
+Binary files linux-3.16-UPDATED/taskinfo/.git/objects/fb/74489cbffc2c5be6887a77497cf5d9c2780b73 and linux-3.16-ORG/taskinfo/.git/objects/fb/74489cbffc2c5be6887a77497cf5d9c2780b73 differ
+diff -urN linux-3.16-UPDATED/taskinfo/.git/ORIG_HEAD linux-3.16-ORG/taskinfo/.git/ORIG_HEAD
+--- linux-3.16-UPDATED/taskinfo/.git/ORIG_HEAD	2019-09-27 12:27:17.939757560 +0530
++++ linux-3.16-ORG/taskinfo/.git/ORIG_HEAD	1970-01-01 05:30:00.000000000 +0530
+@@ -1 +0,0 @@
+-c279261bf6d7f17070da0678b95d29cb35c825b8
+diff -urN linux-3.16-UPDATED/taskinfo/.git/refs/heads/master linux-3.16-ORG/taskinfo/.git/refs/heads/master
+--- linux-3.16-UPDATED/taskinfo/.git/refs/heads/master	2019-09-27 12:27:17.875757560 +0530
++++ linux-3.16-ORG/taskinfo/.git/refs/heads/master	1970-01-01 05:30:00.000000000 +0530
+@@ -1 +0,0 @@
+-c279261bf6d7f17070da0678b95d29cb35c825b8
+diff -urN linux-3.16-UPDATED/taskinfo/.git/refs/remotes/origin/master linux-3.16-ORG/taskinfo/.git/refs/remotes/origin/master
+--- linux-3.16-UPDATED/taskinfo/.git/refs/remotes/origin/master	2019-09-27 12:27:17.879757560 +0530
++++ linux-3.16-ORG/taskinfo/.git/refs/remotes/origin/master	1970-01-01 05:30:00.000000000 +0530
+@@ -1 +0,0 @@
+-c279261bf6d7f17070da0678b95d29cb35c825b8
+diff -urN linux-3.16-UPDATED/taskinfo/.gitignore linux-3.16-ORG/taskinfo/.gitignore
+--- linux-3.16-UPDATED/taskinfo/.gitignore	2019-09-27 12:27:17.939757560 +0530
++++ linux-3.16-ORG/taskinfo/.gitignore	1970-01-01 05:30:00.000000000 +0530
+@@ -1,4 +0,0 @@
+-*.cmd
+-*.o
+-*.builtin
+-*.order
+diff -urN linux-3.16-UPDATED/taskinfo/Makefile linux-3.16-ORG/taskinfo/Makefile
+--- linux-3.16-UPDATED/taskinfo/Makefile	2019-09-27 12:27:17.863757560 +0530
++++ linux-3.16-ORG/taskinfo/Makefile	1970-01-01 05:30:00.000000000 +0530
+@@ -1 +0,0 @@
+-obj-y:=sh_task_info.o
+diff -urN linux-3.16-UPDATED/taskinfo/sh_task_info.c linux-3.16-ORG/taskinfo/sh_task_info.c
+--- linux-3.16-UPDATED/taskinfo/sh_task_info.c	2019-09-27 12:27:17.859757560 +0530
++++ linux-3.16-ORG/taskinfo/sh_task_info.c	1970-01-01 05:30:00.000000000 +0530
+@@ -1,82 +0,0 @@
+-#include <linux/kernel.h>
+-#include <linux/syscalls.h>
+-#include <linux/file.h>
+-#include <linux/fcntl.h>
+-#include <linux/init.h>
+-#include <linux/fs.h>
+-#include <linux/sched.h>
+-#include <uapi/asm-generic/errno-base.h>
+-#include <asm/uaccess.h>
+-
+-#include "taskinfo.h"
+-
+-asmlinkage long sys_sh_task_info(int pid , char* filename)
+-{
+-	if(pid <= 0)
+-		return -EINVAL;
+-	if(pid > 32768)
+-		return -EINVAL;
+-
+-	struct task_struct *task;
+-	struct file *file;
+-	int fileOpen , xVariable = 0;
+-
+-	mm_segment_t old_fs = get_fs();
+-	set_fs(KERNEL_DS);
+-
+-	fileOpen = sys_open(filename , O_WRONLY|O_CREAT , 0644);
+-
+-	char data[700] , temp[700];
+-	int lines = 15;
+-
+-	for_each_process(task)
+-	{
+-		if((int)task->pid == pid)
+-		{
+-			xVariable = 3;
+-
+-			printk("Process Name: %s\n" , task->comm);
+-			strcpy(data , "Process Name: ");
+-			strcat(data , task->comm);
+-			strcat(data , "\n");
+-
+-			lines = lines + 1;
+-
+-			printk("Process PID: %ld\n" , (long)task->pid);
+-			strcat(data , "Process PID: ");
+-			sprintf(temp , "%ld\n" , (long)task->pid);
+-			strcat(data , temp);
+-
+-			lines = lines + 2;
+-
+-			printk("Process Priority: %ld\n" , (long)task->prio);
+-			strcat(data , "Process Priority: ");
+-			sprintf(temp , "%ld\n"  , (long)task->prio);
+-			strcat(data , temp);
+-
+-			lines = lines + 3;
+-
+-			printk("Process Parent Name: %s\n" , task->parent->comm);
+-			strcat(data , "Process Parent Name: ");
+-			sprintf(temp , "%s\n"  , task->parent->comm);
+-			strcat(data , temp);
+-
+-
+-			lines = lines + 5;
+-
+-			printk("Process Exit State : %ld\n" , (long)task->exit_code);
+-			strcat(data , "Process Exit State: ");
+-			sprintf(temp , "%ld\n"  , (long)task->exit_code);
+-			strcat(data , temp);
+-
+-			lines = lines + 7;
+-
+-			if(fileOpen < 0)
+-				return -EISDIR;
+-			file = fget(fileOpen);
+-			file->f_op->write(file , data , strlen(data) , &file->f_pos);
+-		}
+-	}
+-	set_fs(old_fs);
+-	return 0;
+-}
+diff -urN linux-3.16-UPDATED/taskinfo/.sh_task_info.o.cmd linux-3.16-ORG/taskinfo/.sh_task_info.o.cmd
+--- linux-3.16-UPDATED/taskinfo/.sh_task_info.o.cmd	2019-09-27 12:27:17.867757560 +0530
++++ linux-3.16-ORG/taskinfo/.sh_task_info.o.cmd	1970-01-01 05:30:00.000000000 +0530
+@@ -1,842 +0,0 @@
+-cmd_taskinfo/sh_task_info.o := gcc -Wp,-MD,taskinfo/.sh_task_info.o.d  -nostdinc -isystem /usr/lib/gcc/x86_64-linux-gnu/4.9/include -I./arch/x86/include -Iarch/x86/include/generated  -Iinclude -I./arch/x86/include/uapi -Iarch/x86/include/generated/uapi -I./include/uapi -Iinclude/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -m64 -mno-mmx -mno-sse -mno-80387 -mno-fp-ret-in-387 -mpreferred-stack-boundary=3 -mtune=generic -mno-red-zone -mcmodel=kernel -funit-at-a-time -maccumulate-outgoing-args -DCONFIG_X86_X32_ABI -DCONFIG_AS_CFI=1 -DCONFIG_AS_CFI_SIGNAL_FRAME=1 -DCONFIG_AS_CFI_SECTIONS=1 -DCONFIG_AS_FXSAVEQ=1 -DCONFIG_AS_CRC32=1 -DCONFIG_AS_AVX=1 -DCONFIG_AS_AVX2=1 -pipe -Wno-sign-compare -fno-asynchronous-unwind-tables -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fno-delete-null-pointer-checks -O2 -Wframe-larger-than=1024 -fstack-protector -Wno-unused-but-set-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -g -pg -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -DCC_HAVE_ASM_GOTO    -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(sh_task_info)"  -D"KBUILD_MODNAME=KBUILD_STR(sh_task_info)" -c -o taskinfo/.tmp_sh_task_info.o taskinfo/sh_task_info.c
+-
+-source_taskinfo/sh_task_info.o := taskinfo/sh_task_info.c
+-
+-deps_taskinfo/sh_task_info.o := \
+-  include/linux/kernel.h \
+-    $(wildcard include/config/lbdaf.h) \
+-    $(wildcard include/config/preempt/voluntary.h) \
+-    $(wildcard include/config/debug/atomic/sleep.h) \
+-    $(wildcard include/config/mmu.h) \
+-    $(wildcard include/config/prove/locking.h) \
+-    $(wildcard include/config/panic/timeout.h) \
+-    $(wildcard include/config/ring/buffer.h) \
+-    $(wildcard include/config/tracing.h) \
+-    $(wildcard include/config/ftrace/mcount/record.h) \
+-  /usr/lib/gcc/x86_64-linux-gnu/4.9/include/stdarg.h \
+-  include/linux/linkage.h \
+-  include/linux/compiler.h \
+-    $(wildcard include/config/sparse/rcu/pointer.h) \
+-    $(wildcard include/config/trace/branch/profiling.h) \
+-    $(wildcard include/config/profile/all/branches.h) \
+-    $(wildcard include/config/enable/must/check.h) \
+-    $(wildcard include/config/enable/warn/deprecated.h) \
+-    $(wildcard include/config/kprobes.h) \
+-  include/linux/compiler-gcc.h \
+-    $(wildcard include/config/arch/supports/optimized/inlining.h) \
+-    $(wildcard include/config/optimize/inlining.h) \
+-  include/linux/compiler-gcc4.h \
+-    $(wildcard include/config/arch/use/builtin/bswap.h) \
+-  include/linux/stringify.h \
+-  include/linux/export.h \
+-    $(wildcard include/config/have/underscore/symbol/prefix.h) \
+-    $(wildcard include/config/modules.h) \
+-    $(wildcard include/config/modversions.h) \
+-    $(wildcard include/config/unused/symbols.h) \
+-  arch/x86/include/asm/linkage.h \
+-    $(wildcard include/config/x86/32.h) \
+-    $(wildcard include/config/x86/64.h) \
+-    $(wildcard include/config/x86/alignment/16.h) \
+-  include/linux/stddef.h \
+-  include/uapi/linux/stddef.h \
+-  include/linux/types.h \
+-    $(wildcard include/config/uid16.h) \
+-    $(wildcard include/config/arch/dma/addr/t/64bit.h) \
+-    $(wildcard include/config/phys/addr/t/64bit.h) \
+-    $(wildcard include/config/64bit.h) \
+-  include/uapi/linux/types.h \
+-  arch/x86/include/uapi/asm/types.h \
+-  include/uapi/asm-generic/types.h \
+-  include/asm-generic/int-ll64.h \
+-  include/uapi/asm-generic/int-ll64.h \
+-  arch/x86/include/uapi/asm/bitsperlong.h \
+-  include/asm-generic/bitsperlong.h \
+-  include/uapi/asm-generic/bitsperlong.h \
+-  include/uapi/linux/posix_types.h \
+-  arch/x86/include/asm/posix_types.h \
+-  arch/x86/include/uapi/asm/posix_types_64.h \
+-  include/uapi/asm-generic/posix_types.h \
+-  include/linux/bitops.h \
+-  arch/x86/include/asm/bitops.h \
+-    $(wildcard include/config/x86/cmov.h) \
+-  arch/x86/include/asm/alternative.h \
+-    $(wildcard include/config/smp.h) \
+-    $(wildcard include/config/paravirt.h) \
+-  arch/x86/include/asm/asm.h \
+-  arch/x86/include/asm/ptrace.h \
+-    $(wildcard include/config/x86/debugctlmsr.h) \
+-  arch/x86/include/asm/segment.h \
+-    $(wildcard include/config/cc/stackprotector.h) \
+-    $(wildcard include/config/x86/32/lazy/gs.h) \
+-  include/uapi/linux/const.h \
+-  arch/x86/include/asm/cache.h \
+-    $(wildcard include/config/x86/l1/cache/shift.h) \
+-    $(wildcard include/config/x86/internode/cache/shift.h) \
+-    $(wildcard include/config/x86/vsmp.h) \
+-  arch/x86/include/asm/page_types.h \
+-    $(wildcard include/config/physical/start.h) \
+-    $(wildcard include/config/physical/align.h) \
+-  arch/x86/include/asm/page_64_types.h \
+-    $(wildcard include/config/randomize/base.h) \
+-    $(wildcard include/config/randomize/base/max/offset.h) \
+-  arch/x86/include/uapi/asm/ptrace.h \
+-  arch/x86/include/uapi/asm/ptrace-abi.h \
+-  arch/x86/include/asm/processor-flags.h \
+-    $(wildcard include/config/vm86.h) \
+-  arch/x86/include/uapi/asm/processor-flags.h \
+-  arch/x86/include/asm/paravirt_types.h \
+-    $(wildcard include/config/x86/local/apic.h) \
+-    $(wildcard include/config/x86/pae.h) \
+-    $(wildcard include/config/paravirt/debug.h) \
+-  arch/x86/include/asm/desc_defs.h \
+-  arch/x86/include/asm/kmap_types.h \
+-    $(wildcard include/config/debug/highmem.h) \
+-  include/asm-generic/kmap_types.h \
+-  arch/x86/include/asm/pgtable_types.h \
+-    $(wildcard include/config/kmemcheck.h) \
+-    $(wildcard include/config/mem/soft/dirty.h) \
+-    $(wildcard include/config/numa/balancing.h) \
+-    $(wildcard include/config/proc/fs.h) \
+-  arch/x86/include/asm/pgtable_64_types.h \
+-  arch/x86/include/asm/sparsemem.h \
+-    $(wildcard include/config/sparsemem.h) \
+-  arch/x86/include/asm/spinlock_types.h \
+-    $(wildcard include/config/paravirt/spinlocks.h) \
+-    $(wildcard include/config/nr/cpus.h) \
+-    $(wildcard include/config/queue/rwlock.h) \
+-  include/asm-generic/qrwlock_types.h \
+-  include/asm-generic/ptrace.h \
+-  arch/x86/include/asm/cpufeature.h \
+-    $(wildcard include/config/x86/debug/static/cpu/has.h) \
+-  arch/x86/include/asm/required-features.h \
+-    $(wildcard include/config/x86/minimum/cpu/family.h) \
+-    $(wildcard include/config/math/emulation.h) \
+-    $(wildcard include/config/x86/cmpxchg64.h) \
+-    $(wildcard include/config/x86/use/3dnow.h) \
+-    $(wildcard include/config/x86/p6/nop.h) \
+-    $(wildcard include/config/matom.h) \
+-  arch/x86/include/asm/rmwcc.h \
+-  arch/x86/include/asm/barrier.h \
+-    $(wildcard include/config/x86/ppro/fence.h) \
+-  arch/x86/include/asm/nops.h \
+-    $(wildcard include/config/mk7.h) \
+-  include/asm-generic/bitops/find.h \
+-    $(wildcard include/config/generic/find/first/bit.h) \
+-  include/asm-generic/bitops/sched.h \
+-  arch/x86/include/asm/arch_hweight.h \
+-  include/asm-generic/bitops/const_hweight.h \
+-  include/asm-generic/bitops/le.h \
+-  arch/x86/include/uapi/asm/byteorder.h \
+-  include/linux/byteorder/little_endian.h \
+-  include/uapi/linux/byteorder/little_endian.h \
+-  include/linux/swab.h \
+-  include/uapi/linux/swab.h \
+-  arch/x86/include/uapi/asm/swab.h \
+-  include/linux/byteorder/generic.h \
+-  include/asm-generic/bitops/ext2-atomic-setbit.h \
+-  include/linux/log2.h \
+-    $(wildcard include/config/arch/has/ilog2/u32.h) \
+-    $(wildcard include/config/arch/has/ilog2/u64.h) \
+-  include/linux/typecheck.h \
+-  include/linux/printk.h \
+-    $(wildcard include/config/default/message/loglevel.h) \
+-    $(wildcard include/config/early/printk.h) \
+-    $(wildcard include/config/printk.h) \
+-    $(wildcard include/config/dynamic/debug.h) \
+-  include/linux/init.h \
+-    $(wildcard include/config/broken/rodata.h) \
+-    $(wildcard include/config/lto.h) \
+-  include/linux/kern_levels.h \
+-  include/linux/cache.h \
+-    $(wildcard include/config/arch/has/cache/line/size.h) \
+-  include/uapi/linux/kernel.h \
+-  include/uapi/linux/sysinfo.h \
+-  include/linux/dynamic_debug.h \
+-  include/linux/syscalls.h \
+-    $(wildcard include/config/ftrace/syscalls.h) \
+-    $(wildcard include/config/old/sigsuspend.h) \
+-    $(wildcard include/config/old/sigsuspend3.h) \
+-    $(wildcard include/config/old/sigaction.h) \
+-    $(wildcard include/config/odd/rt/sigaction.h) \
+-    $(wildcard include/config/ia64.h) \
+-    $(wildcard include/config/clone/backwards.h) \
+-    $(wildcard include/config/clone/backwards3.h) \
+-  include/uapi/linux/aio_abi.h \
+-  include/linux/capability.h \
+-  include/uapi/linux/capability.h \
+-  include/linux/signal.h \
+-  include/linux/list.h \
+-    $(wildcard include/config/debug/list.h) \
+-  include/linux/poison.h \
+-    $(wildcard include/config/illegal/pointer/value.h) \
+-  include/uapi/linux/signal.h \
+-  arch/x86/include/asm/signal.h \
+-    $(wildcard include/config/compat.h) \
+-  arch/x86/include/uapi/asm/signal.h \
+-  include/linux/time.h \
+-    $(wildcard include/config/arch/uses/gettimeoffset.h) \
+-  include/linux/seqlock.h \
+-    $(wildcard include/config/debug/lock/alloc.h) \
+-  include/linux/spinlock.h \
+-    $(wildcard include/config/debug/spinlock.h) \
+-    $(wildcard include/config/generic/lockbreak.h) \
+-    $(wildcard include/config/preempt.h) \
+-  include/linux/preempt.h \
+-    $(wildcard include/config/debug/preempt.h) \
+-    $(wildcard include/config/preempt/tracer.h) \
+-    $(wildcard include/config/preempt/count.h) \
+-    $(wildcard include/config/context/tracking.h) \
+-    $(wildcard include/config/preempt/notifiers.h) \
+-  arch/x86/include/asm/preempt.h \
+-  arch/x86/include/asm/percpu.h \
+-    $(wildcard include/config/x86/64/smp.h) \
+-  include/asm-generic/percpu.h \
+-    $(wildcard include/config/have/setup/per/cpu/area.h) \
+-  include/linux/threads.h \
+-    $(wildcard include/config/base/small.h) \
+-  include/linux/percpu-defs.h \
+-    $(wildcard include/config/debug/force/weak/per/cpu.h) \
+-  include/linux/thread_info.h \
+-    $(wildcard include/config/debug/stack/usage.h) \
+-  include/linux/bug.h \
+-    $(wildcard include/config/generic/bug.h) \
+-  arch/x86/include/asm/bug.h \
+-    $(wildcard include/config/debug/bugverbose.h) \
+-  include/asm-generic/bug.h \
+-    $(wildcard include/config/bug.h) \
+-    $(wildcard include/config/generic/bug/relative/pointers.h) \
+-  arch/x86/include/asm/thread_info.h \
+-    $(wildcard include/config/ia32/emulation.h) \
+-  arch/x86/include/asm/page.h \
+-  arch/x86/include/asm/page_64.h \
+-    $(wildcard include/config/debug/virtual.h) \
+-    $(wildcard include/config/flatmem.h) \
+-  include/linux/range.h \
+-  include/asm-generic/memory_model.h \
+-    $(wildcard include/config/discontigmem.h) \
+-    $(wildcard include/config/sparsemem/vmemmap.h) \
+-  include/asm-generic/getorder.h \
+-  arch/x86/include/asm/processor.h \
+-    $(wildcard include/config/m486.h) \
+-    $(wildcard include/config/xen.h) \
+-  arch/x86/include/asm/vm86.h \
+-  arch/x86/include/uapi/asm/vm86.h \
+-  arch/x86/include/asm/math_emu.h \
+-  arch/x86/include/asm/sigcontext.h \
+-  arch/x86/include/uapi/asm/sigcontext.h \
+-  arch/x86/include/asm/current.h \
+-  arch/x86/include/asm/msr.h \
+-  arch/x86/include/uapi/asm/msr.h \
+-  arch/x86/include/uapi/asm/msr-index.h \
+-  include/uapi/linux/ioctl.h \
+-  arch/x86/include/uapi/asm/ioctl.h \
+-  include/asm-generic/ioctl.h \
+-  include/uapi/asm-generic/ioctl.h \
+-  arch/x86/include/uapi/asm/errno.h \
+-  include/uapi/asm-generic/errno.h \
+-  include/uapi/asm-generic/errno-base.h \
+-  arch/x86/include/asm/cpumask.h \
+-  include/linux/cpumask.h \
+-    $(wildcard include/config/cpumask/offstack.h) \
+-    $(wildcard include/config/hotplug/cpu.h) \
+-    $(wildcard include/config/debug/per/cpu/maps.h) \
+-    $(wildcard include/config/disable/obsolete/cpumask/functions.h) \
+-  include/linux/bitmap.h \
+-  include/linux/string.h \
+-    $(wildcard include/config/binary/printf.h) \
+-  include/uapi/linux/string.h \
+-  arch/x86/include/asm/string.h \
+-  arch/x86/include/asm/string_64.h \
+-  arch/x86/include/asm/paravirt.h \
+-  arch/x86/include/asm/special_insns.h \
+-  include/linux/personality.h \
+-  include/uapi/linux/personality.h \
+-  include/linux/math64.h \
+-    $(wildcard include/config/arch/supports/int128.h) \
+-  arch/x86/include/asm/div64.h \
+-  include/asm-generic/div64.h \
+-  include/linux/err.h \
+-  include/linux/irqflags.h \
+-    $(wildcard include/config/trace/irqflags.h) \
+-    $(wildcard include/config/irqsoff/tracer.h) \
+-    $(wildcard include/config/trace/irqflags/support.h) \
+-  arch/x86/include/asm/irqflags.h \
+-  include/linux/atomic.h \
+-    $(wildcard include/config/arch/has/atomic/or.h) \
+-    $(wildcard include/config/generic/atomic64.h) \
+-  arch/x86/include/asm/atomic.h \
+-  arch/x86/include/asm/cmpxchg.h \
+-  arch/x86/include/asm/cmpxchg_64.h \
+-  arch/x86/include/asm/atomic64_64.h \
+-  include/asm-generic/atomic-long.h \
+-  include/linux/bottom_half.h \
+-  include/linux/preempt_mask.h \
+-  include/linux/spinlock_types.h \
+-  include/linux/lockdep.h \
+-    $(wildcard include/config/lockdep.h) \
+-    $(wildcard include/config/lock/stat.h) \
+-    $(wildcard include/config/prove/rcu.h) \
+-  include/linux/rwlock_types.h \
+-  arch/x86/include/asm/spinlock.h \
+-  include/linux/jump_label.h \
+-    $(wildcard include/config/jump/label.h) \
+-  arch/x86/include/asm/jump_label.h \
+-  arch/x86/include/asm/qrwlock.h \
+-    $(wildcard include/config/x86/oostore.h) \
+-  include/asm-generic/qrwlock.h \
+-  include/linux/rwlock.h \
+-  include/linux/spinlock_api_smp.h \
+-    $(wildcard include/config/inline/spin/lock.h) \
+-    $(wildcard include/config/inline/spin/lock/bh.h) \
+-    $(wildcard include/config/inline/spin/lock/irq.h) \
+-    $(wildcard include/config/inline/spin/lock/irqsave.h) \
+-    $(wildcard include/config/inline/spin/trylock.h) \
+-    $(wildcard include/config/inline/spin/trylock/bh.h) \
+-    $(wildcard include/config/uninline/spin/unlock.h) \
+-    $(wildcard include/config/inline/spin/unlock/bh.h) \
+-    $(wildcard include/config/inline/spin/unlock/irq.h) \
+-    $(wildcard include/config/inline/spin/unlock/irqrestore.h) \
+-  include/linux/rwlock_api_smp.h \
+-    $(wildcard include/config/inline/read/lock.h) \
+-    $(wildcard include/config/inline/write/lock.h) \
+-    $(wildcard include/config/inline/read/lock/bh.h) \
+-    $(wildcard include/config/inline/write/lock/bh.h) \
+-    $(wildcard include/config/inline/read/lock/irq.h) \
+-    $(wildcard include/config/inline/write/lock/irq.h) \
+-    $(wildcard include/config/inline/read/lock/irqsave.h) \
+-    $(wildcard include/config/inline/write/lock/irqsave.h) \
+-    $(wildcard include/config/inline/read/trylock.h) \
+-    $(wildcard include/config/inline/write/trylock.h) \
+-    $(wildcard include/config/inline/read/unlock.h) \
+-    $(wildcard include/config/inline/write/unlock.h) \
+-    $(wildcard include/config/inline/read/unlock/bh.h) \
+-    $(wildcard include/config/inline/write/unlock/bh.h) \
+-    $(wildcard include/config/inline/read/unlock/irq.h) \
+-    $(wildcard include/config/inline/write/unlock/irq.h) \
+-    $(wildcard include/config/inline/read/unlock/irqrestore.h) \
+-    $(wildcard include/config/inline/write/unlock/irqrestore.h) \
+-  include/uapi/linux/time.h \
+-  include/uapi/asm-generic/signal-defs.h \
+-  arch/x86/include/uapi/asm/siginfo.h \
+-  include/asm-generic/siginfo.h \
+-  include/uapi/asm-generic/siginfo.h \
+-  include/linux/sem.h \
+-    $(wildcard include/config/sysvipc.h) \
+-  include/linux/rcupdate.h \
+-    $(wildcard include/config/rcu/torture/test.h) \
+-    $(wildcard include/config/tree/rcu.h) \
+-    $(wildcard include/config/tree/preempt/rcu.h) \
+-    $(wildcard include/config/rcu/trace.h) \
+-    $(wildcard include/config/preempt/rcu.h) \
+-    $(wildcard include/config/rcu/stall/common.h) \
+-    $(wildcard include/config/rcu/user/qs.h) \
+-    $(wildcard include/config/tiny/rcu.h) \
+-    $(wildcard include/config/debug/objects/rcu/head.h) \
+-    $(wildcard include/config/rcu/nocb/cpu/all.h) \
+-    $(wildcard include/config/rcu/nocb/cpu.h) \
+-    $(wildcard include/config/no/hz/full/sysidle.h) \
+-  include/linux/completion.h \
+-  include/linux/wait.h \
+-  include/uapi/linux/wait.h \
+-  include/linux/debugobjects.h \
+-    $(wildcard include/config/debug/objects.h) \
+-    $(wildcard include/config/debug/objects/free.h) \
+-  include/linux/rcutree.h \
+-  include/uapi/linux/sem.h \
+-  include/linux/ipc.h \
+-  include/linux/uidgid.h \
+-    $(wildcard include/config/user/ns.h) \
+-  include/linux/highuid.h \
+-  include/uapi/linux/ipc.h \
+-  arch/x86/include/uapi/asm/ipcbuf.h \
+-  include/uapi/asm-generic/ipcbuf.h \
+-  arch/x86/include/uapi/asm/sembuf.h \
+-  include/uapi/linux/unistd.h \
+-  arch/x86/include/asm/unistd.h \
+-    $(wildcard include/config/x86/x32/abi.h) \
+-  arch/x86/include/uapi/asm/unistd.h \
+-  arch/x86/include/generated/uapi/asm/unistd_64.h \
+-  arch/x86/include/generated/asm/unistd_64_x32.h \
+-  include/linux/quota.h \
+-    $(wildcard include/config/quota/netlink/interface.h) \
+-  include/linux/mutex.h \
+-    $(wildcard include/config/debug/mutexes.h) \
+-    $(wildcard include/config/mutex/spin/on/owner.h) \
+-  include/linux/osq_lock.h \
+-  include/linux/rwsem.h \
+-    $(wildcard include/config/rwsem/spin/on/owner.h) \
+-    $(wildcard include/config/rwsem/generic/spinlock.h) \
+-  arch/x86/include/asm/rwsem.h \
+-  include/linux/percpu_counter.h \
+-  include/linux/smp.h \
+-  include/linux/errno.h \
+-  include/uapi/linux/errno.h \
+-  include/linux/llist.h \
+-    $(wildcard include/config/arch/have/nmi/safe/cmpxchg.h) \
+-  arch/x86/include/asm/smp.h \
+-    $(wildcard include/config/x86/io/apic.h) \
+-    $(wildcard include/config/x86/32/smp.h) \
+-    $(wildcard include/config/debug/nmi/selftest.h) \
+-  arch/x86/include/asm/mpspec.h \
+-    $(wildcard include/config/eisa.h) \
+-    $(wildcard include/config/x86/mpparse.h) \
+-    $(wildcard include/config/acpi.h) \
+-  arch/x86/include/asm/mpspec_def.h \
+-  arch/x86/include/asm/x86_init.h \
+-  arch/x86/include/uapi/asm/bootparam.h \
+-  include/linux/screen_info.h \
+-  include/uapi/linux/screen_info.h \
+-  include/linux/apm_bios.h \
+-  include/uapi/linux/apm_bios.h \
+-  include/linux/edd.h \
+-  include/uapi/linux/edd.h \
+-  arch/x86/include/asm/e820.h \
+-    $(wildcard include/config/efi.h) \
+-    $(wildcard include/config/hibernation.h) \
+-    $(wildcard include/config/memtest.h) \
+-  include/linux/numa.h \
+-    $(wildcard include/config/nodes/shift.h) \
+-  arch/x86/include/uapi/asm/e820.h \
+-    $(wildcard include/config/intel/txt.h) \
+-  include/linux/ioport.h \
+-    $(wildcard include/config/memory/hotremove.h) \
+-  arch/x86/include/asm/ist.h \
+-  arch/x86/include/uapi/asm/ist.h \
+-  include/video/edid.h \
+-    $(wildcard include/config/x86.h) \
+-  include/uapi/video/edid.h \
+-  arch/x86/include/asm/apicdef.h \
+-  arch/x86/include/asm/apic.h \
+-    $(wildcard include/config/x86/x2apic.h) \
+-  include/linux/pm.h \
+-    $(wildcard include/config/vt/console/sleep.h) \
+-    $(wildcard include/config/pm.h) \
+-    $(wildcard include/config/pm/sleep.h) \
+-    $(wildcard include/config/pm/runtime.h) \
+-    $(wildcard include/config/pm/clk.h) \
+-    $(wildcard include/config/pm/generic/domains.h) \
+-  include/linux/workqueue.h \
+-    $(wildcard include/config/debug/objects/work.h) \
+-    $(wildcard include/config/freezer.h) \
+-    $(wildcard include/config/sysfs.h) \
+-  include/linux/timer.h \
+-    $(wildcard include/config/timer/stats.h) \
+-    $(wildcard include/config/debug/objects/timers.h) \
+-  include/linux/ktime.h \
+-    $(wildcard include/config/ktime/scalar.h) \
+-  include/linux/jiffies.h \
+-  include/linux/timex.h \
+-  include/uapi/linux/timex.h \
+-  include/uapi/linux/param.h \
+-  arch/x86/include/uapi/asm/param.h \
+-  include/asm-generic/param.h \
+-    $(wildcard include/config/hz.h) \
+-  include/uapi/asm-generic/param.h \
+-  arch/x86/include/asm/timex.h \
+-  arch/x86/include/asm/tsc.h \
+-    $(wildcard include/config/x86/tsc.h) \
+-  arch/x86/include/asm/fixmap.h \
+-    $(wildcard include/config/paravirt/clock.h) \
+-    $(wildcard include/config/provide/ohci1394/dma/init.h) \
+-    $(wildcard include/config/pci/mmconfig.h) \
+-    $(wildcard include/config/x86/intel/mid.h) \
+-  arch/x86/include/asm/acpi.h \
+-    $(wildcard include/config/acpi/numa.h) \
+-  include/acpi/pdc_intel.h \
+-  arch/x86/include/asm/numa.h \
+-    $(wildcard include/config/numa.h) \
+-    $(wildcard include/config/numa/emu.h) \
+-  include/linux/nodemask.h \
+-    $(wildcard include/config/highmem.h) \
+-    $(wildcard include/config/movable/node.h) \
+-  arch/x86/include/asm/topology.h \
+-    $(wildcard include/config/x86/ht.h) \
+-  include/asm-generic/topology.h \
+-    $(wildcard include/config/have/memoryless/nodes.h) \
+-  arch/x86/include/asm/mmu.h \
+-  arch/x86/include/asm/realmode.h \
+-    $(wildcard include/config/acpi/sleep.h) \
+-  arch/x86/include/asm/io.h \
+-    $(wildcard include/config/mtrr.h) \
+-  arch/x86/include/generated/asm/early_ioremap.h \
+-  include/asm-generic/early_ioremap.h \
+-    $(wildcard include/config/generic/early/ioremap.h) \
+-  include/asm-generic/iomap.h \
+-    $(wildcard include/config/has/ioport/map.h) \
+-    $(wildcard include/config/pci.h) \
+-    $(wildcard include/config/generic/iomap.h) \
+-  include/asm-generic/pci_iomap.h \
+-    $(wildcard include/config/no/generic/pci/ioport/map.h) \
+-    $(wildcard include/config/generic/pci/iomap.h) \
+-  include/linux/vmalloc.h \
+-  include/linux/rbtree.h \
+-  include/xen/xen.h \
+-    $(wildcard include/config/xen/dom0.h) \
+-    $(wildcard include/config/xen/pvh.h) \
+-  include/xen/interface/xen.h \
+-  arch/x86/include/asm/xen/interface.h \
+-  arch/x86/include/asm/xen/interface_64.h \
+-  arch/x86/include/asm/pvclock-abi.h \
+-  arch/x86/include/asm/xen/hypervisor.h \
+-  include/xen/features.h \
+-  include/xen/interface/features.h \
+-  arch/x86/include/asm/pvclock.h \
+-  include/linux/clocksource.h \
+-    $(wildcard include/config/arch/clocksource/data.h) \
+-    $(wildcard include/config/clocksource/watchdog.h) \
+-    $(wildcard include/config/clksrc/of.h) \
+-  arch/x86/include/asm/clocksource.h \
+-  arch/x86/include/uapi/asm/vsyscall.h \
+-  include/asm-generic/fixmap.h \
+-  arch/x86/include/asm/idle.h \
+-  arch/x86/include/asm/io_apic.h \
+-  arch/x86/include/asm/irq_vectors.h \
+-    $(wildcard include/config/have/kvm.h) \
+-  include/linux/percpu.h \
+-    $(wildcard include/config/need/per/cpu/embed/first/chunk.h) \
+-    $(wildcard include/config/need/per/cpu/page/first/chunk.h) \
+-  include/linux/mmdebug.h \
+-    $(wildcard include/config/debug/vm.h) \
+-  include/linux/pfn.h \
+-  include/uapi/linux/dqblk_xfs.h \
+-  include/linux/dqblk_v1.h \
+-  include/linux/dqblk_v2.h \
+-  include/linux/dqblk_qtree.h \
+-  include/linux/projid.h \
+-  include/uapi/linux/quota.h \
+-  include/linux/key.h \
+-    $(wildcard include/config/keys.h) \
+-    $(wildcard include/config/sysctl.h) \
+-  include/linux/sysctl.h \
+-  include/uapi/linux/sysctl.h \
+-  include/linux/assoc_array.h \
+-    $(wildcard include/config/associative/array.h) \
+-  include/trace/syscall.h \
+-    $(wildcard include/config/tracepoints.h) \
+-    $(wildcard include/config/have/syscall/tracepoints.h) \
+-  include/linux/tracepoint.h \
+-  include/linux/static_key.h \
+-  include/linux/ftrace_event.h \
+-    $(wildcard include/config/perf/events.h) \
+-  include/linux/ring_buffer.h \
+-    $(wildcard include/config/ring/buffer/allow/swap.h) \
+-  include/linux/kmemcheck.h \
+-  include/linux/mm_types.h \
+-    $(wildcard include/config/split/ptlock/cpus.h) \
+-    $(wildcard include/config/arch/enable/split/pmd/ptlock.h) \
+-    $(wildcard include/config/have/cmpxchg/double.h) \
+-    $(wildcard include/config/have/aligned/struct/page.h) \
+-    $(wildcard include/config/transparent/hugepage.h) \
+-    $(wildcard include/config/want/page/debug/flags.h) \
+-    $(wildcard include/config/aio.h) \
+-    $(wildcard include/config/memcg.h) \
+-    $(wildcard include/config/mmu/notifier.h) \
+-    $(wildcard include/config/compaction.h) \
+-  include/linux/auxvec.h \
+-  include/uapi/linux/auxvec.h \
+-  arch/x86/include/uapi/asm/auxvec.h \
+-  include/linux/page-debug-flags.h \
+-    $(wildcard include/config/page/poisoning.h) \
+-    $(wildcard include/config/page/guard.h) \
+-    $(wildcard include/config/page/debug/something/else.h) \
+-  include/linux/uprobes.h \
+-    $(wildcard include/config/uprobes.h) \
+-  arch/x86/include/asm/uprobes.h \
+-  include/linux/notifier.h \
+-  include/linux/srcu.h \
+-  include/linux/page-flags-layout.h \
+-  include/generated/bounds.h \
+-  include/linux/mm.h \
+-    $(wildcard include/config/need/multiple/nodes.h) \
+-    $(wildcard include/config/ppc.h) \
+-    $(wildcard include/config/parisc.h) \
+-    $(wildcard include/config/metag.h) \
+-    $(wildcard include/config/stack/growsup.h) \
+-    $(wildcard include/config/hugetlb/page.h) \
+-    $(wildcard include/config/ksm.h) \
+-    $(wildcard include/config/shmem.h) \
+-    $(wildcard include/config/have/memblock/node/map.h) \
+-    $(wildcard include/config/have/arch/early/pfn/to/nid.h) \
+-    $(wildcard include/config/debug/vm/rb.h) \
+-    $(wildcard include/config/debug/pagealloc.h) \
+-    $(wildcard include/config/memory/hotplug.h) \
+-    $(wildcard include/config/hugetlbfs.h) \
+-  include/linux/gfp.h \
+-    $(wildcard include/config/zone/dma.h) \
+-    $(wildcard include/config/zone/dma32.h) \
+-    $(wildcard include/config/cma.h) \
+-  include/linux/mmzone.h \
+-    $(wildcard include/config/force/max/zoneorder.h) \
+-    $(wildcard include/config/memory/isolation.h) \
+-    $(wildcard include/config/flat/node/mem/map.h) \
+-    $(wildcard include/config/no/bootmem.h) \
+-    $(wildcard include/config/have/memory/present.h) \
+-    $(wildcard include/config/need/node/memmap/size.h) \
+-    $(wildcard include/config/sparsemem/extreme.h) \
+-    $(wildcard include/config/have/arch/pfn/valid.h) \
+-    $(wildcard include/config/nodes/span/other/nodes.h) \
+-    $(wildcard include/config/holes/in/zone.h) \
+-    $(wildcard include/config/arch/has/holes/memorymodel.h) \
+-  include/linux/pageblock-flags.h \
+-    $(wildcard include/config/hugetlb/page/size/variable.h) \
+-  include/linux/memory_hotplug.h \
+-    $(wildcard include/config/have/arch/nodedata/extension.h) \
+-    $(wildcard include/config/have/bootmem/info/node.h) \
+-  arch/x86/include/asm/mmzone.h \
+-  arch/x86/include/asm/mmzone_64.h \
+-  include/linux/topology.h \
+-    $(wildcard include/config/use/percpu/numa/node/id.h) \
+-    $(wildcard include/config/sched/smt.h) \
+-  include/linux/debug_locks.h \
+-    $(wildcard include/config/debug/locking/api/selftests.h) \
+-  include/linux/bit_spinlock.h \
+-  include/linux/shrinker.h \
+-  arch/x86/include/asm/pgtable.h \
+-    $(wildcard include/config/have/arch/soft/dirty.h) \
+-  arch/x86/include/asm/pgtable_64.h \
+-  include/asm-generic/pgtable.h \
+-    $(wildcard include/config/arch/uses/numa/prot/none.h) \
+-  include/linux/page-flags.h \
+-    $(wildcard include/config/pageflags/extended.h) \
+-    $(wildcard include/config/arch/uses/pg/uncached.h) \
+-    $(wildcard include/config/memory/failure.h) \
+-    $(wildcard include/config/swap.h) \
+-  include/linux/huge_mm.h \
+-  include/linux/vmstat.h \
+-    $(wildcard include/config/vm/event/counters.h) \
+-    $(wildcard include/config/debug/tlbflush.h) \
+-    $(wildcard include/config/debug/vm/vmacache.h) \
+-  include/linux/vm_event_item.h \
+-    $(wildcard include/config/migration.h) \
+-  include/linux/seq_file.h \
+-  include/linux/poll.h \
+-  include/linux/fs.h \
+-    $(wildcard include/config/fs/posix/acl.h) \
+-    $(wildcard include/config/security.h) \
+-    $(wildcard include/config/ima.h) \
+-    $(wildcard include/config/quota.h) \
+-    $(wildcard include/config/fsnotify.h) \
+-    $(wildcard include/config/epoll.h) \
+-    $(wildcard include/config/file/locking.h) \
+-    $(wildcard include/config/auditsyscall.h) \
+-    $(wildcard include/config/block.h) \
+-    $(wildcard include/config/fs/xip.h) \
+-  include/linux/kdev_t.h \
+-  include/uapi/linux/kdev_t.h \
+-  include/linux/dcache.h \
+-  include/linux/rculist.h \
+-  include/linux/rculist_bl.h \
+-  include/linux/list_bl.h \
+-  include/linux/lockref.h \
+-    $(wildcard include/config/arch/use/cmpxchg/lockref.h) \
+-  include/linux/path.h \
+-  include/linux/stat.h \
+-  arch/x86/include/uapi/asm/stat.h \
+-  include/uapi/linux/stat.h \
+-  include/linux/list_lru.h \
+-  include/linux/radix-tree.h \
+-  include/linux/pid.h \
+-  include/linux/semaphore.h \
+-  include/uapi/linux/fiemap.h \
+-  include/linux/migrate_mode.h \
+-  include/linux/percpu-rwsem.h \
+-  include/linux/blk_types.h \
+-    $(wildcard include/config/blk/cgroup.h) \
+-    $(wildcard include/config/blk/dev/integrity.h) \
+-  include/uapi/linux/fs.h \
+-  include/uapi/linux/limits.h \
+-  include/linux/nfs_fs_i.h \
+-  include/linux/fcntl.h \
+-  include/uapi/linux/fcntl.h \
+-  arch/x86/include/uapi/asm/fcntl.h \
+-  include/uapi/asm-generic/fcntl.h \
+-  arch/x86/include/asm/uaccess.h \
+-    $(wildcard include/config/x86/intel/usercopy.h) \
+-    $(wildcard include/config/debug/strict/user/copy/checks.h) \
+-  arch/x86/include/asm/smap.h \
+-    $(wildcard include/config/x86/smap.h) \
+-  arch/x86/include/asm/uaccess_64.h \
+-  include/uapi/linux/poll.h \
+-  arch/x86/include/uapi/asm/poll.h \
+-  include/uapi/asm-generic/poll.h \
+-  include/linux/trace_seq.h \
+-  include/linux/hardirq.h \
+-  include/linux/ftrace_irq.h \
+-    $(wildcard include/config/ftrace/nmi/enter.h) \
+-  include/linux/vtime.h \
+-    $(wildcard include/config/virt/cpu/accounting/native.h) \
+-    $(wildcard include/config/virt/cpu/accounting/gen.h) \
+-    $(wildcard include/config/virt/cpu/accounting.h) \
+-    $(wildcard include/config/irq/time/accounting.h) \
+-  include/linux/context_tracking_state.h \
+-  arch/x86/include/asm/hardirq.h \
+-    $(wildcard include/config/x86/thermal/vector.h) \
+-    $(wildcard include/config/x86/mce/threshold.h) \
+-    $(wildcard include/config/hyperv.h) \
+-  include/linux/irq.h \
+-    $(wildcard include/config/generic/pending/irq.h) \
+-    $(wildcard include/config/hardirqs/sw/resend.h) \
+-    $(wildcard include/config/generic/irq/legacy/alloc/hwirq.h) \
+-    $(wildcard include/config/generic/irq/legacy.h) \
+-  include/linux/irqreturn.h \
+-  include/linux/irqnr.h \
+-  include/uapi/linux/irqnr.h \
+-  arch/x86/include/asm/irq.h \
+-  arch/x86/include/asm/irq_regs.h \
+-  include/linux/irqdesc.h \
+-    $(wildcard include/config/irq/preflow/fasteoi.h) \
+-    $(wildcard include/config/sparse/irq.h) \
+-  arch/x86/include/asm/hw_irq.h \
+-    $(wildcard include/config/irq/remap.h) \
+-  include/linux/profile.h \
+-    $(wildcard include/config/profiling.h) \
+-  arch/x86/include/asm/sections.h \
+-    $(wildcard include/config/debug/rodata.h) \
+-  include/asm-generic/sections.h \
+-  include/linux/perf_event.h \
+-    $(wildcard include/config/have/hw/breakpoint.h) \
+-    $(wildcard include/config/event/tracing.h) \
+-    $(wildcard include/config/function/tracer.h) \
+-    $(wildcard include/config/cgroup/perf.h) \
+-    $(wildcard include/config/no/hz/full.h) \
+-    $(wildcard include/config/cpu/sup/intel.h) \
+-  include/uapi/linux/perf_event.h \
+-  arch/x86/include/asm/perf_event.h \
+-    $(wildcard include/config/cpu/sup/amd.h) \
+-  arch/x86/include/asm/stacktrace.h \
+-    $(wildcard include/config/frame/pointer.h) \
+-  include/linux/uaccess.h \
+-  include/linux/ptrace.h \
+-  include/linux/sched.h \
+-    $(wildcard include/config/sched/debug.h) \
+-    $(wildcard include/config/no/hz/common.h) \
+-    $(wildcard include/config/lockup/detector.h) \
+-    $(wildcard include/config/detect/hung/task.h) \
+-    $(wildcard include/config/core/dump/default/elf/headers.h) \
+-    $(wildcard include/config/sched/autogroup.h) \
+-    $(wildcard include/config/bsd/process/acct.h) \
+-    $(wildcard include/config/taskstats.h) \
+-    $(wildcard include/config/audit.h) \
+-    $(wildcard include/config/cgroups.h) \
+-    $(wildcard include/config/inotify/user.h) \
+-    $(wildcard include/config/fanotify.h) \
+-    $(wildcard include/config/posix/mqueue.h) \
+-    $(wildcard include/config/schedstats.h) \
+-    $(wildcard include/config/task/delay/acct.h) \
+-    $(wildcard include/config/sched/mc.h) \
+-    $(wildcard include/config/fair/group/sched.h) \
+-    $(wildcard include/config/rt/group/sched.h) \
+-    $(wildcard include/config/cgroup/sched.h) \
+-    $(wildcard include/config/blk/dev/io/trace.h) \
+-    $(wildcard include/config/rcu/boost.h) \
+-    $(wildcard include/config/compat/brk.h) \
+-    $(wildcard include/config/rt/mutexes.h) \
+-    $(wildcard include/config/task/xacct.h) \
+-    $(wildcard include/config/cpusets.h) \
+-    $(wildcard include/config/futex.h) \
+-    $(wildcard include/config/fault/injection.h) \
+-    $(wildcard include/config/latencytop.h) \
+-    $(wildcard include/config/function/graph/tracer.h) \
+-    $(wildcard include/config/bcache.h) \
+-    $(wildcard include/config/have/unstable/sched/clock.h) \
+-  include/uapi/linux/sched.h \
+-  include/linux/sched/prio.h \
+-  include/linux/plist.h \
+-    $(wildcard include/config/debug/pi/list.h) \
+-  include/linux/cputime.h \
+-  arch/x86/include/generated/asm/cputime.h \
+-  include/asm-generic/cputime.h \
+-  include/asm-generic/cputime_nsecs.h \
+-  include/linux/proportions.h \
+-  include/linux/seccomp.h \
+-    $(wildcard include/config/seccomp.h) \
+-    $(wildcard include/config/seccomp/filter.h) \
+-  include/uapi/linux/seccomp.h \
+-  arch/x86/include/asm/seccomp.h \
+-  arch/x86/include/asm/seccomp_64.h \
+-  arch/x86/include/asm/ia32_unistd.h \
+-  arch/x86/include/generated/asm/unistd_32_ia32.h \
+-  include/linux/rtmutex.h \
+-    $(wildcard include/config/debug/rt/mutexes.h) \
+-  include/linux/resource.h \
+-  include/uapi/linux/resource.h \
+-  arch/x86/include/uapi/asm/resource.h \
+-  include/asm-generic/resource.h \
+-  include/uapi/asm-generic/resource.h \
+-  include/linux/hrtimer.h \
+-    $(wildcard include/config/high/res/timers.h) \
+-    $(wildcard include/config/timerfd.h) \
+-  include/linux/timerqueue.h \
+-  include/linux/task_io_accounting.h \
+-    $(wildcard include/config/task/io/accounting.h) \
+-  include/linux/latencytop.h \
+-  include/linux/cred.h \
+-    $(wildcard include/config/debug/credentials.h) \
+-  include/linux/selinux.h \
+-    $(wildcard include/config/security/selinux.h) \
+-  include/linux/pid_namespace.h \
+-    $(wildcard include/config/pid/ns.h) \
+-  include/linux/nsproxy.h \
+-  include/linux/kref.h \
+-  include/uapi/linux/ptrace.h \
+-  arch/x86/include/asm/local64.h \
+-  include/asm-generic/local64.h \
+-  arch/x86/include/asm/local.h \
+-  arch/x86/include/asm/hw_breakpoint.h \
+-  arch/x86/include/uapi/asm/hw_breakpoint.h \
+-  include/linux/kdebug.h \
+-  arch/x86/include/asm/kdebug.h \
+-    $(wildcard include/config/kexec.h) \
+-  include/linux/ftrace.h \
+-    $(wildcard include/config/have/function/trace/mcount/test.h) \
+-    $(wildcard include/config/dynamic/ftrace/with/regs.h) \
+-    $(wildcard include/config/dynamic/ftrace.h) \
+-    $(wildcard include/config/stack/tracer.h) \
+-  include/linux/trace_clock.h \
+-  arch/x86/include/asm/trace_clock.h \
+-  include/linux/kallsyms.h \
+-    $(wildcard include/config/kallsyms.h) \
+-  arch/x86/include/asm/ftrace.h \
+-  arch/x86/include/asm/compat.h \
+-  arch/x86/include/asm/user32.h \
+-  include/linux/cpu.h \
+-    $(wildcard include/config/pm/sleep/smp.h) \
+-  include/linux/node.h \
+-    $(wildcard include/config/memory/hotplug/sparse.h) \
+-  include/linux/device.h \
+-    $(wildcard include/config/debug/devres.h) \
+-    $(wildcard include/config/pinctrl.h) \
+-    $(wildcard include/config/dma/cma.h) \
+-    $(wildcard include/config/devtmpfs.h) \
+-    $(wildcard include/config/sysfs/deprecated.h) \
+-  include/linux/kobject.h \
+-    $(wildcard include/config/uevent/helper.h) \
+-    $(wildcard include/config/debug/kobject/release.h) \
+-  include/linux/sysfs.h \
+-  include/linux/kernfs.h \
+-    $(wildcard include/config/kernfs.h) \
+-  include/linux/idr.h \
+-  include/linux/kobject_ns.h \
+-  include/linux/klist.h \
+-  include/linux/pinctrl/devinfo.h \
+-  include/linux/pinctrl/consumer.h \
+-  include/linux/pinctrl/pinctrl-state.h \
+-  include/linux/ratelimit.h \
+-  arch/x86/include/asm/device.h \
+-    $(wildcard include/config/x86/dev/dma/ops.h) \
+-    $(wildcard include/config/intel/iommu.h) \
+-    $(wildcard include/config/amd/iommu.h) \
+-  include/linux/pm_wakeup.h \
+-  include/linux/irq_work.h \
+-    $(wildcard include/config/irq/work.h) \
+-  include/linux/jump_label_ratelimit.h \
+-  include/linux/perf_regs.h \
+-    $(wildcard include/config/have/perf/regs.h) \
+-  arch/x86/include/uapi/asm/perf_regs.h \
+-  include/linux/file.h \
+-  include/uapi/asm-generic/errno-base.h \
+-  taskinfo/taskinfo.h \
+-
+-taskinfo/sh_task_info.o: $(deps_taskinfo/sh_task_info.o)
+-
+-$(deps_taskinfo/sh_task_info.o):
+diff -urN linux-3.16-UPDATED/taskinfo/taskinfo.h linux-3.16-ORG/taskinfo/taskinfo.h
+--- linux-3.16-UPDATED/taskinfo/taskinfo.h	2019-09-27 12:27:17.871757560 +0530
++++ linux-3.16-ORG/taskinfo/taskinfo.h	1970-01-01 05:30:00.000000000 +0530
+@@ -1 +0,0 @@
+-asmlinkage long sys_sh_task_info(int pid , char* filename);

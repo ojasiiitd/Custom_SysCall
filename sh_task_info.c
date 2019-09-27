@@ -12,6 +12,7 @@
 
 asmlinkage long sys_sh_task_info(int pid , char* filename)
 {
+	// Invalid PID
 	if(pid <= 0)
 		return -EINVAL;
 	if(pid > 32768)
@@ -33,6 +34,10 @@ asmlinkage long sys_sh_task_info(int pid , char* filename)
 	{
 		if((int)task->pid == pid)
 		{
+			// error in opening file
+			if(fileOpen < 0)
+				return -EISDIR;
+
 			xVariable = 3;
 
 			printk("Process Name: %s\n" , task->comm);
@@ -71,10 +76,9 @@ asmlinkage long sys_sh_task_info(int pid , char* filename)
 
 			lines = lines + 7;
 
-			if(fileOpen < 0)
-				return -EISDIR;
 			file = fget(fileOpen);
 			file->f_op->write(file , data , strlen(data) , &file->f_pos);
+			sys_close(fileOpen);
 		}
 	}
 	set_fs(old_fs);

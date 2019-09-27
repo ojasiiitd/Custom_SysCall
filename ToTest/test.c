@@ -9,7 +9,7 @@ int main(int argc , char** argv)
 {
 	int pid = atoi(argv[1]);
 	char path[100];
-	strcpy(path , "/home/ojas/ToTest/");
+	strcpy(path , "/usr/src/linux-3.16-UPDATED/taskinfo/ToTest/");
 	strcat(path , argv[2]);
 	long int call = syscall(318 , pid , path);
 
